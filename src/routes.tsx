@@ -1,15 +1,24 @@
 import React from 'react';
-import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router';
 
 import { Navbar } from './components/Navbar';
 import { Login } from './pages';
+import firebase from 'firebase/compat/app';
 
-const rootRoute = createRootRoute({
+type RouterContext = {
+  user: firebase.User | null;
+}
+
+const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => (
-    <>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
+    }}>
       <Navbar />
       <Outlet />
-    </>
+    </div>
   ),
 });
 
@@ -29,11 +38,18 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: Login,
+  beforeLoad: ({ context }) => {
+    if (context.user) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
 });
 
 const routeTree = rootRoute.addChildren([indexRoute, loginRoute]);
 
-export const router = createRouter({ routeTree });
+export const router = createRouter({ routeTree, context: { user: null } });
 
 declare module "@tanstack/react-router" {
   interface Register {
