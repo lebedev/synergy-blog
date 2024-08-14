@@ -46,6 +46,19 @@ export function Navbar() {
                 >
                   Лента
                 </Link>
+                {user ? (
+                  <>
+                    <Link
+                      to="/upsertPost"
+                      activeOptions={{ exact: true }}
+                      activeProps={{ className: 'bg-gray-900 text-white' }}
+                      inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                      className="rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Написать пост
+                    </Link>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

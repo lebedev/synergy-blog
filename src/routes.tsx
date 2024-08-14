@@ -2,7 +2,7 @@ import React from 'react';
 import { createRootRouteWithContext, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router';
 
 import { Navbar } from './components/Navbar';
-import { Login } from './pages';
+import { Login, UpsertPost } from './pages';
 import firebase from 'firebase/compat/app';
 
 type RouterContext = {
@@ -47,7 +47,20 @@ const loginRoute = createRoute({
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute]);
+const upsertPostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/upsertPost',
+  component: UpsertPost,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, upsertPostRoute]);
 
 export const router = createRouter({ routeTree, context: { user: null } });
 
