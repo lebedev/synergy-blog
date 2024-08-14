@@ -4,6 +4,7 @@ import { createRootRouteWithContext, createRoute, createRouter, Outlet, redirect
 import { Navbar } from './components/Navbar';
 import { Feed, Login, UpsertPost } from './pages';
 import firebase from 'firebase/compat/app';
+import { SinglePost } from './pages/SinglePost';
 
 type RouterContext = {
   user: firebase.User | null;
@@ -26,6 +27,12 @@ const feedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: Feed,
+});
+
+const singlePostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/posts/$id',
+  component: SinglePost,
 });
 
 const loginRoute = createRoute({
@@ -54,7 +61,12 @@ const upsertPostRoute = createRoute({
   },
 });
 
-const routeTree = rootRoute.addChildren([feedRoute, loginRoute, upsertPostRoute]);
+const routeTree = rootRoute.addChildren([
+  feedRoute,
+  singlePostRoute,
+  loginRoute,
+  upsertPostRoute,
+]);
 
 export const router = createRouter({ routeTree, context: { user: null } });
 

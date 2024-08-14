@@ -50,3 +50,5 @@ export type Post = {
 export const upsertPost = (post: Post) => postsCollection.doc(post.id).set(post);
 
 export const getPublicPosts = async () => postsCollection.where('isPublic', '==', true).get().then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
+
+export const getPost = async (id: string) => postsCollection.doc(id).get().then((querySnapshot) => querySnapshot.data());
