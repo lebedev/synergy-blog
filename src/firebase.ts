@@ -35,7 +35,7 @@ export const initAuthStateChanged = (callback: (user: firebase.User | null) => v
 export const signOut = () => firebase.auth().signOut();
 
 const db = firebase.firestore();
-const postsCollection = db.collection('posts');
+const postsCollection = db.collection('posts') as firebase.firestore.CollectionReference<Post>;
 
 export type Post = {
   id: string;
@@ -49,9 +49,4 @@ export type Post = {
 
 export const upsertPost = (post: Post) => postsCollection.doc(post.id).set(post);
 
-db.collection('posts').where('isPublic', '==', true).get().then((querySnapshot) => {
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-  });
-});
+export const getPublicPosts = async () => postsCollection.where('isPublic', '==', true).get().then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
