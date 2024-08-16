@@ -19,7 +19,7 @@ export function Subscriptions() {
   return (
     <div className="mx-auto w-full max-w-screen-sm px-4 py-24 sm:px-6 sm:py-32 lg:px-8 grid gap-y-8">
       {subscriptions.map((subscription) => (
-        <div className="grid gap-x-6 gap-y-4 rounded-3xl bg-gray-100 p-4">
+        <div className="grid gap-x-6 gap-y-4 rounded-3xl bg-gray-100 p-4" key={subscription}>
           <p className="font-semibold text-gray-900">
             {subscription}
             <span

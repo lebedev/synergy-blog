@@ -79,13 +79,15 @@ export function Post({ post }: Props) {
       <p className="mt-2 text-lg leading-8 text-gray-600">{post.text}</p>
       <p className="mt-1 font-semibold text-gray-900">
         {post.email}
-        {post.email === user?.email ? (
-          <span className="inline font-normal text-gray-600 text-sm"> (Вы)</span>
-        ) : !subscriptions.includes(post.email) ? (
-          <span className="inline font-normal text-gray-600 text-sm" onClick={handleSubscribe}> [Подписаться]</span>
-        ) : (
-          <span className="inline font-normal text-gray-600 text-sm" onClick={handleUnsubscribe}> [Отписаться]</span>
-        )}
+        {user?.email ? (
+          post.email === user.email ? (
+            <span className="inline font-normal text-gray-600 text-sm"> (Вы)</span>
+          ) : !subscriptions.includes(post.email) ? (
+            <span className="inline font-normal text-gray-600 text-sm cursor-pointer" onClick={handleSubscribe}> [Подписаться]</span>
+          ) : (
+            <span className="inline font-normal text-gray-600 text-sm cursor-pointer" onClick={handleUnsubscribe}> [Отписаться]</span>
+          )
+        ) : null}
       </p>
     </div>
   );

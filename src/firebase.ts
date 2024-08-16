@@ -62,6 +62,13 @@ export const getPublicPosts = async () =>
     .get()
     .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
 
+export const getMyPosts = async (email: string) =>
+  postsCollection
+    .where('email', '==', email)
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
+
 export const getPost = async (id: string) => postsCollection.doc(id).get().then((querySnapshot) => querySnapshot.data());
 
 export const deletePost = async (id: string) => postsCollection.doc(id).delete();

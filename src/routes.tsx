@@ -6,6 +6,7 @@ import { Home, Login, NewPost, EditPost, Feed } from './pages';
 import firebase from 'firebase/compat/app';
 import { SinglePost } from './pages/SinglePost';
 import { Subscriptions } from './pages/Subscriptions';
+import { MyFeed } from './pages/MyFeed';
 
 type RouterContext = {
   user: firebase.User | null;
@@ -47,6 +48,19 @@ const subscriptionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/subscriptions',
   component: Subscriptions,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
+});
+
+const myFeedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/my-feed',
+  component: MyFeed,
   beforeLoad: ({ context }) => {
     if (!context.user) {
       throw redirect({
@@ -105,6 +119,7 @@ const routeTree = rootRoute.addChildren([
   homeRoute,
   feedRoute,
   subscriptionsRoute,
+  myFeedRoute,
   newPostRoute,
   editPostRoute,
   singlePostRoute,
