@@ -49,6 +49,24 @@ export function Navbar() {
                 {user ? (
                   <>
                     <Link
+                      to="/feed"
+                      activeOptions={{ exact: true }}
+                      activeProps={{ className: 'bg-gray-900 text-white' }}
+                      inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                      className="rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Лента
+                    </Link>
+                    <Link
+                      to="/subscriptions"
+                      activeOptions={{ exact: true }}
+                      activeProps={{ className: 'bg-gray-900 text-white' }}
+                      inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                      className="rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Подписки
+                    </Link>
+                    <Link
                       to="/posts/new"
                       activeOptions={{ exact: true }}
                       activeProps={{ className: 'bg-gray-900 text-white' }}
@@ -111,6 +129,40 @@ export function Navbar() {
           >
             Главная
           </DisclosureButton>
+          {user ? (
+            <>
+              <DisclosureButton
+                as={Link}
+                to="/feed"
+                activeOptions={{ exact: true }}
+                activeProps={{ className: 'bg-gray-900 text-white' }}
+                inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                className="block rounded-md px-3 py-2 text-base font-medium"
+              >
+                Лента
+              </DisclosureButton>
+              <DisclosureButton
+                as={Link}
+                to="/subscriptions"
+                activeOptions={{ exact: true }}
+                activeProps={{ className: 'bg-gray-900 text-white' }}
+                inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                className="block rounded-md px-3 py-2 text-base font-medium"
+              >
+                Подписки
+              </DisclosureButton>
+              <DisclosureButton
+                as={Link}
+                to="/posts/new"
+                activeOptions={{ exact: true }}
+                activeProps={{ className: 'bg-gray-900 text-white' }}
+                inactiveProps={{ className: 'text-gray-300 hover:bg-gray-700 hover:text-white' }}
+                className="block rounded-md px-3 py-2 text-base font-medium"
+              >
+                Написать пост
+              </DisclosureButton>
+            </>
+          ) : null}
         </div>
       </DisclosurePanel>
     </Disclosure>

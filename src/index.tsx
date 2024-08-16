@@ -5,6 +5,7 @@ import './index.css';
 
 import { AuthProvider } from './AuthProvider';
 import { AppWithRouter } from './AppWithRouter';
+import { SubscriptionsProvider } from './SubscriptionsProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,7 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <AppWithRouter />
+      <SubscriptionsProvider>
+        <AppWithRouter />
+      </SubscriptionsProvider>
     </AuthProvider>
   </React.StrictMode>
 );

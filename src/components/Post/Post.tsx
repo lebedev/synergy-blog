@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 
-import { deletePost, Post as PostEntity } from '../../firebase';
+import { addSubscription, deletePost, Post as PostEntity, removeSubscription } from '../../firebase';
 import { useUser } from '../../AuthProvider';
+import { useSubscriptions } from '../../SubscriptionsProvider';
 
 type Props = {
   post: PostEntity;
@@ -10,6 +11,7 @@ type Props = {
 
 export function Post({ post }: Props) {
   const user = useUser();
+  const subscriptions = useSubscriptions();
 
   const navigate = useNavigate();
 
@@ -28,6 +30,20 @@ export function Post({ post }: Props) {
     } else {
       await navigate({ to: '/' });
     }
+  };
+
+  const handleSubscribe = async (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    await addSubscription(user?.email ?? '', post.email);
+  };
+
+  const handleUnsubscribe = async (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    await removeSubscription(user?.email ?? '', post.email);
   };
 
   return (
@@ -64,8 +80,12 @@ export function Post({ post }: Props) {
       <p className="mt-1 font-semibold text-gray-900">
         {post.email}
         {post.email === user?.email ? (
-          <p className="inline font-normal text-gray-600 text-sm"> (Вы)</p>
-        ) : null}
+          <span className="inline font-normal text-gray-600 text-sm"> (Вы)</span>
+        ) : !subscriptions.includes(post.email) ? (
+          <span className="inline font-normal text-gray-600 text-sm" onClick={handleSubscribe}> [Подписаться]</span>
+        ) : (
+          <span className="inline font-normal text-gray-600 text-sm" onClick={handleUnsubscribe}> [Отписаться]</span>
+        )}
       </p>
     </div>
   );

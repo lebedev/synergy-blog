@@ -6,12 +6,20 @@ import { initAuthStateChanged } from './firebase';
 const AuthContext = createContext<firebase.User | null>(null);
 
 export function AuthProvider({ children }: PropsWithChildren) {
+  const [initialized, setInitialized] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
 
   useEffect(() => {
-    // @ts-ignore
-    initAuthStateChanged((userData) => setUser(userData?.multiFactor.user ?? null));
+    initAuthStateChanged((userData) => {
+      // @ts-ignore
+      setUser(userData?.multiFactor.user ?? null)
+      setInitialized(true);
+    });
   }, []);
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <AuthContext.Provider value={user}>

@@ -37,14 +37,20 @@ export const signOut = () => firebase.auth().signOut();
 const db = firebase.firestore();
 const postsCollection = db.collection('posts') as firebase.firestore.CollectionReference<Post>;
 
+type Email = string;
+
 export type Post = {
   id: string;
   title: string;
   url: string;
   text: string;
   createdAt: number;
-  email: string;
+  email: Email;
   isPublic: boolean;
+};
+
+export type Subscriptions = {
+  subscriptions: Email[];
 };
 
 export const upsertPost = (post: Post) => postsCollection.doc(post.id).set(post);
@@ -59,3 +65,36 @@ export const getPublicPosts = async () =>
 export const getPost = async (id: string) => postsCollection.doc(id).get().then((querySnapshot) => querySnapshot.data());
 
 export const deletePost = async (id: string) => postsCollection.doc(id).delete();
+
+const subscriptionsCollection = db.collection('subscriptions') as firebase.firestore.CollectionReference<Subscriptions>;
+
+export const addSubscription = async (email: string, subscription: string) =>
+  subscriptionsCollection.doc(email).update({
+    subscriptions: firebase.firestore.FieldValue.arrayUnion(subscription),
+  });
+
+export const removeSubscription = async (email: string, subscription: string) =>
+  subscriptionsCollection.doc(email).update({
+    subscriptions: firebase.firestore.FieldValue.arrayRemove(subscription),
+  });
+
+export const subscribeToSubscriptions = (email: string, callback: Function) => {
+  const subscriptions = subscriptionsCollection.doc(email);
+  return subscriptions.onSnapshot((querySnapshot) => {
+    const subscriptionsData = querySnapshot.data();
+
+    if (!subscriptionsData) {
+      subscriptions.set({}, { merge: true });
+    }
+
+    callback(subscriptionsData?.subscriptions ?? []);
+  });
+};
+
+export const getSubscribedPosts = async (emails: string[]) =>
+  postsCollection
+    .where('email', 'in', emails)
+    .where('isPublic', '==', true)
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
