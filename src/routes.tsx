@@ -2,7 +2,7 @@ import React from 'react';
 import { createRootRouteWithContext, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router';
 
 import { Navbar } from './components/Navbar';
-import { Feed, Login, UpsertPost } from './pages';
+import { Feed, Login, NewPost, EditPost } from './pages';
 import firebase from 'firebase/compat/app';
 import { SinglePost } from './pages/SinglePost';
 
@@ -29,6 +29,19 @@ const feedRoute = createRoute({
   component: Feed,
 });
 
+const editPostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/posts/$id/edit',
+  component: EditPost,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
+});
+
 const singlePostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/posts/$id',
@@ -50,8 +63,8 @@ const loginRoute = createRoute({
 
 const upsertPostRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/upsertPost',
-  component: UpsertPost,
+  path: '/posts/new',
+  component: NewPost,
   beforeLoad: ({ context }) => {
     if (!context.user) {
       throw redirect({
@@ -62,10 +75,11 @@ const upsertPostRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
+  upsertPostRoute,
   feedRoute,
+  editPostRoute,
   singlePostRoute,
   loginRoute,
-  upsertPostRoute,
 ]);
 
 export const router = createRouter({ routeTree, context: { user: null } });

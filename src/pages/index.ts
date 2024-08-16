@@ -1,3 +1,4 @@
 export * from './Login';
-export * from './UpsertPost';
+export * from './NewPost';
+export * from './EditPost';
 export * from './Feed';

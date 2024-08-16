@@ -9,8 +9,10 @@ export function SinglePost() {
   const [post, setPost] = useState<PostEntity>();
 
   useEffect(() => {
+    setPost(undefined);
+
     getPost(id).then((post: PostEntity | undefined) => setPost(post));
-  }, []);
+  }, [id]);
 
   if (!post) {
     return (

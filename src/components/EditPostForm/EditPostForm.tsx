@@ -1,39 +1,46 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import classNames from 'classnames';
-import { v4 as uuid4 } from 'uuid';
 import { useNavigate } from '@tanstack/react-router';
 
-import { upsertPost } from '../../firebase';
+import { Post as PostEntity, upsertPost } from '../../firebase';
 import { useUser } from '../../AuthProvider';
 
-export function UpsertPost() {
+type Props = {
+  post: Pick<PostEntity, 'id'> & Omit<Partial<PostEntity>, 'id'>;
+};
+
+export function EditPostForm({ post }: Props) {
   const user = useUser();
 
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState('');
-  const [url, setUrl] = useState('');
-  const [text, setText] = useState('');
+  const [postData, setPostData] = useState<PostEntity>({
+    title: '',
+    url: '',
+    text: '',
+    isPublic: true,
+    createdAt: NaN,
+    email: user?.email ?? '',
+    ...post,
+  });
+
+  const setPostDataField = <T extends keyof PostEntity>(field: T, value: PostEntity[T]) => setPostData((prevPostData) => ({
+    ...prevPostData,
+    [field]: value,
+  }));
   const [isLoading, setIsLoading] = useState(false);
-  const [isPublic, setIsPublic] = useState(true);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoading(true);
 
-    const id = uuid4();
     await upsertPost({
-      id,
-      title,
-      url,
-      text,
-      email: user?.email ?? '',
-      createdAt: Date.now(),
-      isPublic,
+      ...postData,
+      createdAt: isNaN(postData.createdAt) ? Date.now() : postData.createdAt,
     });
 
-    await navigate({ to: `/posts/${id}` });
+    await navigate({ to: `/posts/${postData.id}` });
 
     return false;
   };
@@ -57,9 +64,10 @@ export function UpsertPost() {
                   className={classNames(
                     'pl-3 block flex-1 border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6',
                     isLoading ? 'cursor-not-allowed' : ''
-                  )}                  disabled={isLoading}
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
+                  )}
+                  disabled={isLoading}
+                  value={postData.title}
+                  onChange={(event) => setPostDataField('title', event.target.value)}
                 />
               </div>
             </div>
@@ -82,8 +90,8 @@ export function UpsertPost() {
                     isLoading ? 'cursor-not-allowed' : ''
                   )}
                   disabled={isLoading}
-                  value={url}
-                  onChange={(event) => setUrl(event.target.value)}
+                  value={postData.url}
+                  onChange={(event) => setPostDataField('url', event.target.value)}
                 />
               </div>
             </div>
@@ -104,8 +112,8 @@ export function UpsertPost() {
                 )}
                 placeholder="(обязательное поле)"
                 disabled={isLoading}
-                value={text}
-                onChange={(event) => setText(event.target.value)}
+                value={postData.text}
+                onChange={(event) => setPostDataField('text', event.target.value)}
               />
             </div>
           </div>
@@ -122,8 +130,8 @@ export function UpsertPost() {
                     isLoading ? 'cursor-not-allowed' : ''
                   )}
                   disabled={isLoading}
-                  checked={isPublic}
-                  onChange={(event) => setIsPublic(event.target.checked)}
+                  checked={postData.isPublic}
+                  onChange={(event) => setPostDataField('isPublic', event.target.checked)}
                 />
               </div>
               <div className="text-sm leading-6">
@@ -149,10 +157,10 @@ export function UpsertPost() {
           </button>
           <button
             type="submit"
-            disabled={!title || !text || isLoading}
+            disabled={!postData.title || !postData.text || isLoading}
             className={classNames(
               'rounded-md bg-indigo-500 leading-6 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 inline-flex items-center',
-              !title || !text || isLoading ? 'cursor-not-allowed' : ''
+              !postData.title || !postData.text || isLoading ? 'cursor-not-allowed' : ''
             )}
           >
             {isLoading ? (
