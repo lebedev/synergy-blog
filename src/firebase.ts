@@ -47,6 +47,8 @@ export type Post = {
   createdAt: number;
   email: Email;
   isPublic: boolean;
+  tags: string[];
+  comments: unknown[];
 };
 
 export type Subscriptions = {
@@ -65,6 +67,14 @@ export const getPublicPosts = async () =>
 export const getMyPosts = async (email: string) =>
   postsCollection
     .where('email', '==', email)
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
+
+export const getTaggedPosts = async (tag: string) =>
+  postsCollection
+    .where('isPublic', '==', true)
+    .where('tags', 'array-contains', tag)
     .orderBy('createdAt', 'desc')
     .get()
     .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));

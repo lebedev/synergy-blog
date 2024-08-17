@@ -7,6 +7,7 @@ import firebase from 'firebase/compat/app';
 import { SinglePost } from './pages/SinglePost';
 import { Subscriptions } from './pages/Subscriptions';
 import { MyFeed } from './pages/MyFeed';
+import { ByTag } from './pages/ByTag';
 
 type RouterContext = {
   user: firebase.User | null;
@@ -42,6 +43,12 @@ const feedRoute = createRoute({
       });
     }
   },
+});
+
+const byTagRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/tags/$tag',
+  component: ByTag,
 });
 
 const subscriptionsRoute = createRoute({
@@ -118,6 +125,7 @@ const newPostRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   homeRoute,
   feedRoute,
+  byTagRoute,
   subscriptionsRoute,
   myFeedRoute,
   newPostRoute,

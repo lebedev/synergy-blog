@@ -77,6 +77,13 @@ export function Post({ post }: Props) {
         <h2 className="text-sm tracking-tight text-gray-500 sm:text-sm">(приватный пост)</h2>
       ) : null}
       <p className="mt-2 text-lg leading-8 text-gray-600">{post.text}</p>
+      {post.tags?.length > 0 ? (
+        <div className="flex flex-row flex-wrap gap-x-3 gap-y-3">
+          {post.tags.map((tag) => (
+            <Link to={`/tags/${tag}`} className="rounded-2xl bg-gray-200 px-3 py-1 text-sm" id={tag}>{tag}</Link>
+          ))}
+        </div>
+      ) : null}
       <p className="mt-1 font-semibold text-gray-900">
         {post.email}
         {user?.email ? (
