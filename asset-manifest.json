@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/synergy-blog/static/css/main.ab3107c0.css",
+    "main.js": "/synergy-blog/static/js/main.55cc1296.js",
+    "index.html": "/synergy-blog/index.html",
+    "main.ab3107c0.css.map": "/synergy-blog/static/css/main.ab3107c0.css.map",
+    "main.55cc1296.js.map": "/synergy-blog/static/js/main.55cc1296.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ab3107c0.css",
+    "static/js/main.55cc1296.js"
+  ]
+}
