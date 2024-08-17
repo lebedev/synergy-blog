@@ -48,11 +48,16 @@ export type Post = {
   email: Email;
   isPublic: boolean;
   tags: string[];
-  comments: unknown[];
 };
 
 export type Subscriptions = {
   subscriptions: Email[];
+};
+
+export type Comment = {
+  text: string;
+  createdAt: number;
+  email: Email;
 };
 
 export const upsertPost = (post: Post) => postsCollection.doc(post.id).set(post);
@@ -80,6 +85,20 @@ export const getTaggedPosts = async (tag: string) =>
     .then((querySnapshot) => querySnapshot.docs.map((doc) => doc.data()));
 
 export const getPost = async (id: string) => postsCollection.doc(id).get().then((querySnapshot) => querySnapshot.data());
+
+export const subscribeToPostComments = (id: string, callback: Function) => {
+  const commentsSubcollection = postsCollection.doc(id).collection('comments') as firebase.firestore.CollectionReference<Comment>;
+
+  return commentsSubcollection.onSnapshot((querySnapshot) => {
+    callback(querySnapshot.docs.map((doc) => doc.data()));
+  });
+};
+
+export const addPostComment = async (postId: string, comment: Comment) =>
+  postsCollection
+    .doc(postId)
+    .collection('comments')
+    .add(comment);
 
 export const deletePost = async (id: string) => postsCollection.doc(id).delete();
 

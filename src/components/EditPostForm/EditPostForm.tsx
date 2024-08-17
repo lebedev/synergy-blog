@@ -22,7 +22,6 @@ export function EditPostForm({ post }: Props) {
     createdAt: NaN,
     email: user?.email ?? '',
     tags: [],
-    comments: [],
     ...post,
   });
   const [tags, setTags] = useState<string>(post.tags?.join(' ') ?? '');
